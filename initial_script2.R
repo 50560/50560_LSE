@@ -398,16 +398,39 @@ lm_estimates_edu <- bind_rows(tidied_estimates_high_edu, tidied_estimates_low_ed
   mutate(content_id = gsub("factor\\(content_id\\)", "", term)) %>%  # Clean term names
   left_join(df_tags2020, by = "content_id")  # Merge with tags dataset
 
-# Meta-regression model with education level as a moderator
-meta_fit_edu_interaction <- rma.mv(
+# Meta-regressions model with education level as a moderator
+meta_fit_edu_immigration_interaction <- rma.mv(
   yi = estimate,         
   V = final_giant_vcov_matrix,  
   mods = ~ issue_immigrant:education_group,  # Interaction term
   data = lm_estimates_edu
 )
-summary(meta_fit_edu_interaction)
+summary(meta_fit_edu_immigration_interaction)
+
+meta_fit_edu_blm_interaction <- rma.mv(
+  yi = estimate,         
+  V = final_giant_vcov_matrix,  
+  mods = ~ issue_blm_race:education_group,  # Interaction term
+  data = lm_estimates_edu
+)
+summary(meta_fit_edu_blm_interaction)
 
 
 
 
+meta_fit_edu_forignp_interaction <- rma.mv(
+  yi = estimate,         
+  V = final_giant_vcov_matrix,  
+  mods = ~ issue_foreign_p:education_group,  # Interaction term
+  data = lm_estimates_edu
+)
+summary(meta_fit_edu_forignp_interaction)
 
+
+meta_fit_edu_dec_interaction <- rma.mv(
+  yi = estimate,         
+  V = final_giant_vcov_matrix,  
+  mods = ~ issue_decency:education_group,  # Interaction term
+  data = lm_estimates_edu
+)
+summary(meta_fit_edu_dec_interaction)
