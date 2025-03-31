@@ -104,7 +104,7 @@ lm_estimates <- map_dfr(out_loop, function(x) {
 
 meta_fit_all <- rma.mv(yi = estimate,   # Effect size (from lm_estimates)
                                           V = giant_vcov_matrix,      # Variance-covariance matrix
-                                          mods = ~ issue_immigrant + issue_foreign_p + issue_blm_race + issue_decency + emotion_fear + persuaded_libs + persuaded_blacks + persuaded_latinx,  # Moderator variable
+                                          mods = ~ issue_immigrant + issue_foreign_p + issue_blm_race + issue_decency + emotion_fear + persuaded_libs + persuaded_black + persuaded_latinx,  # Moderator variable
                                           data = lm_estimates)
 summary(meta_fit_all)
 
