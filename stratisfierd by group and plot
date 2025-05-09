@@ -18,7 +18,7 @@ df_tags2020 <- readRDS("tagging_2020.rds")
 df_responses2020 <- df_responses2020 %>%
   mutate(race_group = case_when(
     ethnicity == "white" ~ "white",
-    ethnicity == "hispanic" ~ "hispanic-latino",
+    ethnicity == "hispanic-latino" ~ "hispanic-latino",
     ethnicity == "black" ~ "black",
     ethnicity == "asian" ~ "asian",
     TRUE ~ "mixed-other"
@@ -121,7 +121,7 @@ vcov_mat <- vcov(meta_fit_race_immigration_interaction)
 # Define scenarios to predict
 pred_df <- expand.grid(
   issue_immigrant = c(0, 1),
-  race_group = c("white", "black", "asian", "mixed-other")
+  race_group = c("white", "black", "asian", "mixed-other", "hispanic-latino")
 )
 
 # Manually compute predictions and standard errors
@@ -135,9 +135,11 @@ pred_df <- pred_df %>%
         as.numeric(race_group == "black"),
         as.numeric(race_group == "asian"),
         as.numeric(race_group == "mixed-other"),
+        as.numeric(race_group == "hispanic-latino"),
         issue_immigrant * as.numeric(race_group == "black"),
         issue_immigrant * as.numeric(race_group == "asian"),
-        issue_immigrant * as.numeric(race_group == "mixed-other")
+        issue_immigrant * as.numeric(race_group == "mixed-other"),
+        issue_immigrant * as.numeric(race_group == "hispanic-latino")
       )
       sum(coefs * x)
     },
@@ -148,9 +150,11 @@ pred_df <- pred_df %>%
         as.numeric(race_group == "black"),
         as.numeric(race_group == "asian"),
         as.numeric(race_group == "mixed-other"),
+        as.numeric(race_group == "hispanic-latino"),
         issue_immigrant * as.numeric(race_group == "black"),
         issue_immigrant * as.numeric(race_group == "asian"),
-        issue_immigrant * as.numeric(race_group == "mixed-other")
+        issue_immigrant * as.numeric(race_group == "mixed-other"),
+        issue_immigrant * as.numeric(race_group == "hispanic-latino")
       )
       sqrt(t(x) %*% vcov_mat %*% x)
     },
@@ -177,7 +181,6 @@ ggplot(pred_df, aes(x = issue_immigrant, y = estimate, color = race_group, group
   theme_minimal()
 
 
-
 ##### 2. blm
 meta_fit_race_blm_interaction <- rma.mv(
   yi = estimate,
@@ -197,7 +200,7 @@ vcov_mat <- vcov(meta_fit_race_blm_interaction)
 # Define scenarios to predict
 pred_df <- expand.grid(
   issue_blm_race = c(0, 1),
-  race_group = c("white", "black", "asian", "mixed-other")
+  race_group = c("white", "black", "asian", "mixed-other", "hispanic-latino")
 )
 
 # Manually compute predictions and standard errors
@@ -211,9 +214,11 @@ pred_df <- pred_df %>%
         as.numeric(race_group == "black"),
         as.numeric(race_group == "asian"),
         as.numeric(race_group == "mixed-other"),
+        as.numeric(race_group == "hispanic-latino"),
         issue_blm_race * as.numeric(race_group == "black"),
         issue_blm_race * as.numeric(race_group == "asian"),
-        issue_blm_race * as.numeric(race_group == "mixed-other")
+        issue_blm_race * as.numeric(race_group == "mixed-other"),
+        issue_blm_race * as.numeric(race_group == "hispanic-latino")
       )
       sum(coefs * x)
     },
@@ -224,9 +229,11 @@ pred_df <- pred_df %>%
         as.numeric(race_group == "black"),
         as.numeric(race_group == "asian"),
         as.numeric(race_group == "mixed-other"),
+        as.numeric(race_group == "hispanic-latino"),
         issue_blm_race * as.numeric(race_group == "black"),
         issue_blm_race * as.numeric(race_group == "asian"),
-        issue_blm_race * as.numeric(race_group == "mixed-other")
+        issue_blm_race * as.numeric(race_group == "mixed-other"),
+        issue_blm_race * as.numeric(race_group == "hispanic-latino")
       )
       sqrt(t(x) %*% vcov_mat %*% x)
     },
@@ -236,7 +243,7 @@ pred_df <- pred_df %>%
   ungroup()
 
 # Convert to factor for plotting
-pred_df$issue_blm_race <- factor(pred_df$issue_blm_race, labels = c("No BLM", "BLM"))
+pred_df$issue_blm_race <- factor(pred_df$issue_blm_race, labels = c("Not BLM", "BLM"))
 
 # Plot
 library(ggplot2)
@@ -245,12 +252,13 @@ ggplot(pred_df, aes(x = issue_blm_race, y = estimate, color = race_group, group 
   geom_line(position = position_dodge(0.3)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2, position = position_dodge(0.3)) +
   labs(
-    title = "Predicted Effects by Race Group and Immigration Content",
+    title = "Predicted Effects by Race Group and blm Content",
     x = "Content Type",
     y = "Predicted Effect",
     color = "Race Group"
   ) +
   theme_minimal()
+
 
 
 ##### 3. forignp
@@ -272,7 +280,7 @@ vcov_mat <- vcov(meta_fit_race_forp_interaction)
 # Define scenarios to predict
 pred_df <- expand.grid(
   issue_foreign_p = c(0, 1),
-  race_group = c("white", "black", "asian", "mixed-other")
+  race_group = c("white", "black", "asian", "mixed-other", "hispanic-latino")
 )
 
 # Manually compute predictions and standard errors
@@ -286,9 +294,11 @@ pred_df <- pred_df %>%
         as.numeric(race_group == "black"),
         as.numeric(race_group == "asian"),
         as.numeric(race_group == "mixed-other"),
+        as.numeric(race_group == "hispanic-latino"),
         issue_foreign_p * as.numeric(race_group == "black"),
         issue_foreign_p * as.numeric(race_group == "asian"),
-        issue_foreign_p * as.numeric(race_group == "mixed-other")
+        issue_foreign_p * as.numeric(race_group == "mixed-other"),
+        issue_foreign_p * as.numeric(race_group == "hispanic-latino")
       )
       sum(coefs * x)
     },
@@ -299,9 +309,11 @@ pred_df <- pred_df %>%
         as.numeric(race_group == "black"),
         as.numeric(race_group == "asian"),
         as.numeric(race_group == "mixed-other"),
+        as.numeric(race_group == "hispanic-latino"),
         issue_foreign_p * as.numeric(race_group == "black"),
         issue_foreign_p * as.numeric(race_group == "asian"),
-        issue_foreign_p * as.numeric(race_group == "mixed-other")
+        issue_foreign_p * as.numeric(race_group == "mixed-other"),
+        issue_foreign_p * as.numeric(race_group == "hispanic-latino")
       )
       sqrt(t(x) %*% vcov_mat %*% x)
     },
@@ -311,24 +323,18 @@ pred_df <- pred_df %>%
   ungroup()
 
 # Convert to factor for plotting
-pred_df$issue_foreign_p <- factor(pred_df$issue_foreign_p, labels = c("no foriegn p", "foriegn p))
+pred_df$issue_foreign_p <- factor(pred_df$issue_foreign_p, labels = c("Not Foreign p", "Foreign p"))
 
-
+# Plot
 library(ggplot2)
 ggplot(pred_df, aes(x = issue_foreign_p, y = estimate, color = race_group, group = race_group)) +
   geom_point(position = position_dodge(0.3), size = 3) +
   geom_line(position = position_dodge(0.3)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2, position = position_dodge(0.3)) +
   labs(
-    title = "Predicted Effects by Race Group and Immigration Content",
+    title = "Predicted Effects by Race Group and Foreign p Content",
     x = "Content Type",
     y = "Predicted Effect",
     color = "Race Group"
   ) +
   theme_minimal()
-
-
-
-
-
-
