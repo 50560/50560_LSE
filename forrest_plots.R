@@ -1,17 +1,18 @@
 library(metafor)
 
-# Step 1: Prepare variance (needed for metafor)
+
 lm_estimates <- lm_estimates %>%
   mutate(vi = std.error^2)
 
-# Step 2: Forest plot - All adverts
+#Forest plot - All adverts
 res_all <- rma(yi = estimate, vi = vi, data = lm_estimates)
 forest(res_all,
        slab = paste("Content", lm_estimates$content_id),
        xlab = "Effect Size (All Adverts)",
        main = "Forest Plot: All Adverts")
 
-# Step 3: Forest plot - Immigration adverts (≥ 0.5)
+# Immigration adverts (≥ 0.5) ### using 0.5 as a resonable cut off of the average coders rating. This was chosen as a comparamise between including a large sample of the ads 
+and also having a good level of certainty about the feature.
 res_immigration <- rma(yi = estimate, vi = vi,
                        data = lm_estimates %>% filter(issue_immigrant >= 0.5))
 forest(res_immigration,
@@ -19,7 +20,7 @@ forest(res_immigration,
        xlab = "Effect Size (Immigration)",
        main = "Forest Plot: Immigration Ads")
 
-# Step 4: Forest plot - BLM/Race adverts (≥ 0.5)
+#  BLM/Race adverts (≥ 0.5)
 res_blm <- rma(yi = estimate, vi = vi,
                data = lm_estimates %>% filter(issue_blm_race >= 0.5))
 forest(res_blm,
@@ -27,7 +28,7 @@ forest(res_blm,
        xlab = "Effect Size (BLM/Race)",
        main = "Forest Plot: BLM/Race Ads")
 
-# Step 5: Forest plot - Foreign Policy adverts (≥ 0.5)
+#  Foreign Policy adverts (≥ 0.5)
 res_foreign <- rma(yi = estimate, vi = vi,
                    data = lm_estimates %>% filter(issue_foreign_p >= 0.5))
 forest(res_foreign,
@@ -36,7 +37,7 @@ forest(res_foreign,
        main = "Forest Plot: Foreign Policy Ads")
 
 
-# Step 6: Forest plot - decency adverts (≥ 0.5)
+#  decency adverts (≥ 0.5)
 res_decency <- rma(yi = estimate, vi = vi,
                    data = lm_estimates %>% filter(issue_decency >= 0.5))
 forest(res_decency,
@@ -44,7 +45,7 @@ forest(res_decency,
        xlab = "Effect Size (Decency)",
        main = "Forest Plot: Decency Ads")
 
-# Step 6: Forest plot - disgust adverts (≥ 0.5)
+#  Forest plot - disgust adverts (≥ 0.5)
 res_disgust <- rma(yi = estimate, vi = vi,
                    data = lm_estimates %>% filter(emotion_disgust >= 0.5))
 forest(res_disgust,
@@ -52,7 +53,7 @@ forest(res_disgust,
        xlab = "Effect Size (Digust)",
        main = "Forest Plot: Disgust Ads")
 
-# Step 7: Forest plot - fear adverts (≥ 0.5)
+# Forest plot - fear adverts (≥ 0.5)
 res_fear <- rma(yi = estimate, vi = vi,
                    data = lm_estimates %>% filter(emotion_fear >= 0.5))
 forest(res_fear,
@@ -60,12 +61,25 @@ forest(res_fear,
        xlab = "Effect Size (Fear)",
        main = "Forest Plot: Fear")
 
-
+# combined primary issues  content (≥ 0.5)
 lm_estimates$immigrationissue_combined <- lm_estimates$issue_blm_race + lm_estimates$issue_foreign_p + lm_estimates$issue_immigrant
-# Step 7: Forest plot - combined racial content (≥ 0.5)
+# - combined racial content (≥ 0.5)
 res_combi <- rma(yi = estimate, vi = vi,
                 data = lm_estimates %>% filter(immigrationissue_combined >= 0.5))
 forest(res_combi,
        slab = paste("Content", lm_estimates %>% filter(immigrationissue_combined >= 0.5) %>% pull(content_id)),
        xlab = "Effect Size (Combined racial content)",
        main = "Forest Plot: Combined racial content")
+
+# combined national sec content (≥ 0.5)
+lm_estimates$immigrationissue_combined_foreign_immi <- lm_estimates$issue_immigrant +lm_estimates$issue_foreign_p
+
+res_nationals <- rma(yi = estimate, vi = vi,
+                 data = lm_estimates %>% filter(immigrationissue_combined_foreign_immi >= 0.5))
+forest(res_nationals,
+       slab = paste("Content", lm_estimates %>% filter(immigrationissue_combined_foreign_immi >= 0.5) %>% pull(content_id)),
+       xlab = "Effect Size (National Security content)",
+       main = "Forest Plot: National Security content",  xlab.cex = 0.9,  
+       cex.lab = 0.7,   
+       cex.axis = 0.9)
+
