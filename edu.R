@@ -44,7 +44,7 @@ df_responses2020$education_binary <- ifelse(is.na(df_responses2020$education_num
 df_filtered <- df_responses2020 %>%
   filter(!is.na(education_numeric))  # Removes NA values in education
 
-# Create two subsets: below 2 and at least 2, finnished school or not
+# Create two subsets
 df_low_edu <- df_filtered %>%
   filter(education_numeric < 2)
 
@@ -82,7 +82,7 @@ out_loop_high_edu <- map(list_study_ids_high_edu, function(.x) {
     return(NULL)
   }
   
-  # Fit the linear model
+
   lm_fit <- lm(combined_outcome ~ factor(content_id), data = df_filtered)
   
   # Tidying up the estimates
@@ -105,10 +105,8 @@ tidied_estimates_high_edu <- map_dfr(out_loop_high_edu, function(x) x$tidied_est
 # Combine the vcov matrices
 giant_vcov_matrix_high_edu <- map(out_loop_high_edu, function(.x) .x$vcov_matrix) %>% bdiag()
 
-# Check if  symmetric
+# Checks
 stopifnot(isSymmetric(giant_vcov_matrix_high_edu))
-
-# Check if the standard errors from the model match those from the tidy results
 stopifnot(identical(giant_vcov_matrix_high_edu %>% diag %>% sqrt %>% unname %>% round(10), tidied_estimates_high_edu$std.error %>% round(10)))
 
 # check for 1 study 
@@ -151,7 +149,7 @@ df_sample_combined_fav_choice_low_edu <- df_sample_low_edu %>%
   )
 
 
-# Fitting the model using the correct filtered data (df_filtered)
+
 out_loop_low_edu <- map(list_study_ids_low_edu, function(.x) {
   df_filtered <- df_sample_combined_fav_choice_low_edu %>% filter(study_id == .x)
   
@@ -160,7 +158,7 @@ out_loop_low_edu <- map(list_study_ids_low_edu, function(.x) {
     return(NULL)
   }
   
-  # Fit the linear model using the correct filtered data
+ 
   lm_fit <- lm(combined_outcome ~ factor(content_id), data = df_filtered)
   
   # Tidying up the estimates
@@ -201,7 +199,6 @@ final_giant_vcov_matrix <- bdiag(giant_vcov_matrix_low_edu, giant_vcov_matrix_hi
 stopifnot(isSymmetric(final_giant_vcov_matrix))
 # Extract standard errors from covariance matrix
 computed_se <- final_giant_vcov_matrix %>% diag() %>% sqrt() %>% unname() %>% round(10)
-# Combine expected standard errors from both subsets
 expected_se <- c(tidied_estimates_low_edu$std.error, tidied_estimates_high_edu$std.error) %>% round(10)
 # Check if they match
 stopifnot(identical(computed_se, expected_se))
@@ -225,7 +222,7 @@ lm_estimates_edu <- bind_rows(tidied_estimates_low_edu,tidied_estimates_high_edu
 meta_fit_edu_immigration_interaction <- rma.mv(
   yi = estimate,         
   V = final_giant_vcov_matrix,  
-  mods = ~ issue_immigrant*education_group,  # Interaction term
+  mods = ~ issue_immigrant*education_group,  
   data = lm_estimates_edu
 )
 summary(meta_fit_edu_immigration_interaction)
@@ -233,7 +230,7 @@ summary(meta_fit_edu_immigration_interaction)
 meta_fit_edu_blm_interaction <- rma.mv(
   yi = estimate,         
   V = final_giant_vcov_matrix,  
-  mods = ~ issue_blm_race*education_group,  # Interaction term
+  mods = ~ issue_blm_race*education_group, 
   data = lm_estimates_edu
 )
 summary(meta_fit_edu_blm_interaction)
