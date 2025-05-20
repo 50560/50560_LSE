@@ -1,12 +1,12 @@
-##white/non wite
 
-##raw plot: # Load required library
 library(ggplot2)
 
-# Extract fixed-effect summary
+
+
+# Extract summary
 model_summary <- summary(meta_fit_race_immigration_interaction)
 
-# Build a data frame with fixed effect estimates and CIs
+# Build a data frame 
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -16,13 +16,13 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+# Clean up term names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (non-Hispanic, Non-Immigration)",
-                            "Immigration Issue (Effect for non-Hispanic)",
-                            "Hispanic (Effect on Non-Immigration)",
-                            "Interaction: Hispanic × Immigration"
+                            "Intercept (racegroup, Non-Immigration)",
+                            "Immigration Issue (Effect for racegroup)",
+                            "racegroup (Effect on Non-Immigration)",
+                            "Interaction: racegroup × Immigration"
                           ))
 
 # Plot raw coefficients
@@ -31,7 +31,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for Hispanic/Non-Hispanic - Immigration",
+    title = "Meta-Regression Coefficients for racegroup - Immigration",
     x = "Model Term",
     y = "Effect Size"
   ) +
@@ -43,13 +43,12 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot:blm  # Load required library
-library(ggplot2)
+##raw plot:blm
 
 # Extract fixed-effect summary
 model_summary <- summary(meta_fit_race_blm_interaction)
 
-# Build a data frame with fixed effect estimates and CIs
+# Build a data frame 
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -59,13 +58,13 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+#Clean up term names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (Hispanic, Non-BLM)",
-                            "BLM Issue (Effect for Non-Hispanic)",
-                            "White (Effect on Non-BLM)",
-                            "Interaction: White × BLM"
+                            "Intercept (racegroup, Non-BLM)",
+                            "BLM Issue (Effect for racegroup)",
+                            "racegroup (Effect on Non-BLM)",
+                            "Interaction: racegroup × BLM"
                           ))
 
 # Plot raw coefficients
@@ -74,7 +73,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for White/Hispanic - BLM",
+    title = "Meta-Regression Coefficients for racegroup - BLM",
     x = "Model Term",
     y = "Effect Size"
   ) +
@@ -88,13 +87,13 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot: forp# Load required library
-library(ggplot2)
+##raw plot: forp
 
-# Extract fixed-effect summary
+
+# Extract summary
 model_summary <- summary(meta_fit_race_forignp_interaction)
 
-# Build a data frame with fixed effect estimates and CIs
+
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -104,13 +103,13 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (Hispanic, Non-Foreign_p)",
-                            "Foreign_p Issue (Effect for Hispanic)",
-                            "White (Effect on Non-Foreign_p)",
-                            "Interaction: White × Foreign_p"
+                            "Intercept (racegroup, Non-Foreign_p)",
+                            "Foreign_p Issue (Effect for racegroup)",
+                            "racegroup (Effect on Non-Foreign_p)",
+                            "Interaction: racegroup × Foreign_p"
                           ))
 
 # Plot raw coefficients
@@ -119,7 +118,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for White/Hispanic - Foreign_p",
+    title = "Meta-Regression Coefficients for racegroup - Foreign_p",
     x = "Model Term",
     y = "Effect Size"
   ) +
@@ -131,13 +130,12 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot: decen# Load required library
-library(ggplot2)
+##raw plot: dec
 
 # Extract fixed-effect summary
 model_summary <- summary(meta_fit_race_dec_interaction)
 
-# Build a data frame with fixed effect estimates and CIs
+
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -147,13 +145,13 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+#Clean up term names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (Black, Non-Decency)",
-                            "Decency Issue (Effect for Black)",
-                            "White (Effect on Non-Decency)",
-                            "Interaction: White × Decency"
+                            "Intercept (racegroup, Non-Decency)",
+                            "Decency Issue (Effect for racegroup)",
+                            "racegroup (Effect on Non-Decency)",
+                            "Interaction: racegroup × Decency"
                           ))
 
 # Plot raw coefficients
@@ -162,7 +160,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for White/Black - Decency",
+    title = "Meta-Regression Coefficients for racegroup - Decency",
     x = "Model Term",
     y = "Effect Size"
   ) +
@@ -175,8 +173,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot:fear # Load required library
-library(ggplot2)
+##raw plot:fear
 
 # Extract fixed-effect summary
 model_summary <- summary(meta_fit_fear)
@@ -191,13 +188,13 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (Hispanic, Non-Fear)",
-                            "Fear (Effect for Hispanic)",
-                            "White (Effect on Non-Fear)",
-                            "Interaction: White × Fear"
+                            "Intercept (racegroup, Non-Fear)",
+                            "Fear (Effect for racegroup)",
+                            "racegroup (Effect on Non-Fear)",
+                            "Interaction: racegroup × Fear"
                           ))
 
 # Plot raw coefficients
@@ -206,7 +203,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for White/Hispanic - Fear",
+    title = "Meta-Regression Coefficients for racegroup - Fear",
     x = "Model Term",
     y = "Effect Size"
   ) +
@@ -219,12 +216,11 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 ##raw plot: disgust# Load required library
-library(ggplot2)
 
-# Extract fixed-effect summary
+
 model_summary <- summary(meta_fit_disgust)
 
-# Build a data frame with fixed effect estimates and CIs
+# 
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -234,22 +230,22 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+# Clean up term names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (Hispanic, Non-Disgust)",
-                            "Disgust (Effect for Hispanic)",
-                            "White (Effect on Non-Disgust)",
-                            "Interaction: White × Disgust"
+                            "Intercept (racegroup, Non-Disgust)",
+                            "Disgust (Effect for racegroup)",
+                            "racegroup (Effect on Non-Disgust)",
+                            "Interaction: racegroup × Disgust"
                           ))
 
-# Plot raw coefficients
+# Plot 
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for White/Hispanic - Disgust",
+    title = "Meta-Regression Coefficients for racegroup - Disgust",
     x = "Model Term",
     y = "Effect Size"
   ) +
@@ -262,9 +258,8 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 ##raw plot: #combined Load required library
-library(ggplot2)
 
-# Extract fixed-effect summary
+
 model_summary <- summary(meta_fit_combined_immigration_issue)
 
 # Build a data frame with fixed effect estimates and CIs
@@ -277,13 +272,13 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+# term names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (Hispanic, Non-Primary)",
-                            "Primary Issues (Effect for Hispanic)",
-                            "White (Effect on Non-Primary)",
-                            "Interaction: White × Primary"
+                            "Intercept (racegroup, Non-Primary)",
+                            "Primary Issues (Effect for racegroup)",
+                            "racegroup (Effect on Non-Primary)",
+                            "Interaction: racegroup × Primary"
                           ))
 
 # Plot raw coefficients
@@ -292,7 +287,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for White/Hispanic - Primary Issues",
+    title = "Meta-Regression Coefficients for racegroup - Primary Issues",
     x = "Model Term",
     y = "Effect Size"
   ) +
@@ -304,10 +299,6 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot: # Load required library
-library(ggplot2)
-
-# Extract fixed-effect summary
 model_summary <- summary(meta_fit_combined_immigration_foreignp)
 
 # Build a data frame with fixed effect estimates and CIs
@@ -320,22 +311,22 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Optional: Clean up term names
+#  Clean up names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
-                            "Intercept (Hispanic, Non-National_Security)",
-                            "National_Security Issue (Effect for Hispanic)",
-                            "White (Effect on Non-National_Security)",
-                            "Interaction: White × National_Security"
+                            "Intercept (racegroup, Non-National_Security)",
+                            "National_Security Issue (Effect for racegroup)",
+                            "racegroup (Effect on Non-National_Security)",
+                            "Interaction: racegroup × National_Security"
                           ))
 
-# Plot raw coefficients
+# Plot
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   labs(
-    title = "Meta-Regression Coefficients for White/Hispanic - National Security",
+    title = "Meta-Regression Coefficients for racegroup - National Security",
     x = "Model Term",
     y = "Effect Size"
   ) +
