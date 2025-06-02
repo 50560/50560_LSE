@@ -83,3 +83,21 @@ forest(res_nationals,
        cex.lab = 0.7,   
        cex.axis = 0.9)
 
+
+
+
+
+#####additonal plot without the random effects model plot: 
+res_disgust <- rma(yi = estimate, vi = vi,
+                   data = lm_estimates %>% filter(emotion_disgust >= 0.5))
+
+forest(res_disgust,
+       slab = paste("Content", lm_estimates %>% filter(emotion_disgust >= 0.5) %>% pull(content_id)),
+       xlab = "Effect Size (Disgust)",
+       main = "Forest Plot: Disgust Ads",
+       header = "Content ID",
+       addfit = FALSE,     
+       xlab.cex = 0.9,  
+       cex.lab = 0.7,   
+       cex.axis = 0.9)
+
