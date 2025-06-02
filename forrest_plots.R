@@ -1,6 +1,7 @@
+#load in plotting package 
 library(metafor)
 
-
+#add in varience
 lm_estimates <- lm_estimates %>%
   mutate(vi = std.error^2)
 
@@ -87,14 +88,14 @@ forest(res_nationals,
 
 
 
-#####additonal plot without the random effects model plot: 
-res_disgust <- rma(yi = estimate, vi = vi,
-                   data = lm_estimates %>% filter(emotion_disgust >= 0.5))
+#####additonal plot without the random effects model plot example: 
+res_x <- rma(yi = estimate, vi = vi,
+                   data = lm_estimates %>% filter(issue/emtoion >= 0.5))
 
-forest(res_disgust,
-       slab = paste("Content", lm_estimates %>% filter(emotion_disgust >= 0.5) %>% pull(content_id)),
-       xlab = "Effect Size (Disgust)",
-       main = "Forest Plot: Disgust Ads",
+forest(res_x,
+       slab = paste("Content", lm_estimates %>% filter(issue/emotion >= 0.5) %>% pull(content_id)),
+       xlab = "Effect Size (x)",
+       main = "Forest Plot: x Ads",
        header = "Content ID",
        addfit = FALSE,     
        xlab.cex = 0.9,  
