@@ -1,12 +1,11 @@
-
+# This script was used to produce figure x which took the raw regression outputs and transformed them into to plots to visualise how the coefficient chnaged based on what was interacted.
+#load package
 library(ggplot2)
 
-
-
-# Extract summary
+# Extract summary from the previous run model for example:
 model_summary <- summary(meta_fit_race_immigration_interaction)
 
-# Build a data frame 
+# Build a data frame with the desired variable names 
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -16,7 +15,7 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Clean up term names
+# Clean up term names to ones that will be plotted
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
                             "Intercept (racegroup, Non-Immigration)",
@@ -43,9 +42,9 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot:blm
+# This is a repetition on above using the second primary variable of interest, BLM
 
-# Extract fixed-effect summary
+
 model_summary <- summary(meta_fit_race_blm_interaction)
 
 # Build a data frame 
@@ -58,7 +57,7 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-#Clean up term names
+# term names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
                             "Intercept (racegroup, Non-BLM)",
@@ -67,7 +66,7 @@ plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                             "Interaction: racegroup × BLM"
                           ))
 
-# Plot raw coefficients
+# Plot
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
@@ -87,10 +86,7 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot: forp
-
-
-# Extract summary
+# This is a repetition on above using the third primary variable of interest, Foreign Policy
 model_summary <- summary(meta_fit_race_forignp_interaction)
 
 
@@ -112,7 +108,7 @@ plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                             "Interaction: racegroup × Foreign_p"
                           ))
 
-# Plot raw coefficients
+# Plot
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
@@ -128,11 +124,11 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
+# The next 5 plots are for the secondary variables of interest and are a repetition of above 
+
+#decency
 
 
-##raw plot: dec
-
-# Extract fixed-effect summary
 model_summary <- summary(meta_fit_race_dec_interaction)
 
 
@@ -145,7 +141,7 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-#Clean up term names
+
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
                             "Intercept (racegroup, Non-Decency)",
@@ -154,7 +150,7 @@ plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                             "Interaction: racegroup × Decency"
                           ))
 
-# Plot raw coefficients
+
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
@@ -173,12 +169,11 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot:fear
+#fear
 
-# Extract fixed-effect summary
 model_summary <- summary(meta_fit_fear)
 
-# Build a data frame with fixed effect estimates and CIs
+
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -197,7 +192,7 @@ plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                             "Interaction: racegroup × Fear"
                           ))
 
-# Plot raw coefficients
+
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
@@ -215,12 +210,10 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot: disgust# Load required library
-
-
+#Disgust
 model_summary <- summary(meta_fit_disgust)
 
-# 
+
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -230,7 +223,6 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# Clean up term names
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
                             "Intercept (racegroup, Non-Disgust)",
@@ -239,7 +231,7 @@ plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                             "Interaction: racegroup × Disgust"
                           ))
 
-# Plot 
+
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
@@ -257,12 +249,12 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-##raw plot: #combined Load required library
+#Combined Primary 
 
 
 model_summary <- summary(meta_fit_combined_immigration_issue)
 
-# Build a data frame with fixed effect estimates and CIs
+
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -272,7 +264,7 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-# term names
+
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
                             "Intercept (racegroup, Non-Primary)",
@@ -281,7 +273,7 @@ plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                             "Interaction: racegroup × Primary"
                           ))
 
-# Plot raw coefficients
+
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
@@ -297,11 +289,11 @@ ggplot(plot_data, aes(x = Label, y = Estimate)) +
 
 
 
-
+# National Security
 
 model_summary <- summary(meta_fit_combined_immigration_foreignp)
 
-# Build a data frame with fixed effect estimates and CIs
+
 plot_data <- data.frame(
   Term = rownames(model_summary$beta),
   Estimate = model_summary$beta[, 1],
@@ -311,7 +303,7 @@ plot_data <- data.frame(
   pval = model_summary$pval
 )
 
-#  Clean up names
+
 plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                           labels = c(
                             "Intercept (racegroup, Non-National_Security)",
@@ -320,7 +312,7 @@ plot_data$Label <- factor(plot_data$Term, levels = plot_data$Term,
                             "Interaction: racegroup × National_Security"
                           ))
 
-# Plot
+
 ggplot(plot_data, aes(x = Label, y = Estimate)) +
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub), width = 0.15) +
