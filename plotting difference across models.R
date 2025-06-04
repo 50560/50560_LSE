@@ -1,7 +1,15 @@
-meta_summary_immi <- tibble(
-  model = c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"),
-  estimate = c(-1.448, -0.684, 0.515),
-  std.error = c(0.602, 0.524, 0.395)
+#this script was used to plot the difference results in persuasiveness for the three primary issues by how education was conceptualised.
+
+#load packages
+library(tibble)
+library(dplyr)
+library(ggplot2)
+#1. immigration
+meta_summary_dual <- tibble(
+  model = rep(c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"), each = 2),
+  type = rep(c("Immigration x High Eductaion", "Immigration x Low Eductaion"), times = 3),
+  estimate = c(0.394, -1.448, 0.55, -0.684, 0.009, 0.515), #this was the raw data from the regressions previously run
+  std.error = c(0.371, 0.730, 0.524, 0.896, 0.68, 0.872)
 ) %>%
   mutate(
     lower = estimate - 1.96 * std.error,
@@ -9,33 +17,32 @@ meta_summary_immi <- tibble(
   )
 
 
-library(ggplot2)
 
-ggplot(meta_summary_immi, aes(x = model, y = estimate)) +
-  geom_point(size = 3) +
-  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.1) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
-  coord_flip() +  # horizontal layout
-  labs(
-    title = "Meta-Regression Estimates by Education Cutoff",
-    x = "Model (Education Level Cutoff)",
-    y = "Estimated Effect (with 95% CI)"
+
+ggplot(meta_summary_dual, aes(x = model, y = estimate, color = type)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  geom_errorbar(
+    aes(ymin = lower, ymax = upper),
+    position = position_dodge(width = 0.5),
+    width = 0.2
   ) +
-  theme_minimal()
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  coord_flip() +
+  labs(
+    title = "Effect of Ad Type by Education Stratification Model: Immigration",
+    x = "Education Model",
+    y = "Effect Size (Estimate ± 95% CI)",
+    color = "Variables"
+  ) +
+  theme_minimal(base_size = 13)
 
 
-
-
-
-##########BLM
-
-
-
-
-meta_summary_blm <- tibble(
-  model = c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"),
-  estimate = c(0.312, 0.246, 0.257),
-  std.error = c(0.722, 0.410, 0.404)
+#2. blm
+meta_summary_dual <- tibble(
+  model = rep(c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"), each = 2),
+  type = rep(c("Immigration x High Eductaion", "Immigration x Low Eductaion"), times = 3),
+  estimate = c(-0.238, 0.312, -0.291, 0.246, -0.372, 0.257),
+  std.error = c(0.206, 0.722, 0.246, 0.41, 0.315, 0.404)
 ) %>%
   mutate(
     lower = estimate - 1.96 * std.error,
@@ -43,35 +50,31 @@ meta_summary_blm <- tibble(
   )
 
 
-library(ggplot2)
-
-ggplot(meta_summary_blm, aes(x = model, y = estimate)) +
-  geom_point(size = 3) +
-  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.1) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
-  coord_flip() +  # horizontal layout
-  labs(
-    title = "Meta-Regression Estimates by Education Cutoff",
-    x = "Model (Education Level Cutoff)",
-    y = "Estimated Effect (with 95% CI)"
+ggplot(meta_summary_dual, aes(x = model, y = estimate, color = type)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  geom_errorbar(
+    aes(ymin = lower, ymax = upper),
+    position = position_dodge(width = 0.5),
+    width = 0.2
   ) +
-  theme_minimal()
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  coord_flip() +
+  labs(
+    title = "Effect of Ad Type by Education Stratification Model:BLM",
+    x = "Education Model",
+    y = "Effect Size (Estimate ± 95% CI)",
+    color = "Variables"
+  ) +
+  theme_minimal(base_size = 13)
 
 
 
-
-
-
-
-##########fori_P
-
-
-
-
-meta_summary_for <- tibble(
-  model = c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"),
-  estimate = c(0.176, 2.074, 0.084),
-  std.error = c(1.233, 0.791, 0.784)
+#3. foreign policy
+meta_summary_dual <- tibble(
+  model = rep(c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"), each = 2),
+  type = rep(c("Immigration x High Eductaion", "Immigration x Low Eductaion"), times = 3),
+  estimate = c(-0.146, 0.176, -0.499, 2.074, 0.078, 0.084),
+  std.error = c(0.402, 1.233, 0.479, 0.791, 0.608, 0.784)
 ) %>%
   mutate(
     lower = estimate - 1.96 * std.error,
@@ -79,16 +82,28 @@ meta_summary_for <- tibble(
   )
 
 
-library(ggplot2)
 
-ggplot(meta_summary_for, aes(x = model, y = estimate)) +
-  geom_point(size = 3) +
-  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.1) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
-  coord_flip() +  # horizontal layout
-  labs(
-    title = "Meta-Regression Estimates by Education Cutoff",
-    x = "Model (Education Level Cutoff)",
-    y = "Estimated Effect (with 95% CI)"
+
+ggplot(meta_summary_dual, aes(x = model, y = estimate, color = type)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  geom_errorbar(
+    aes(ymin = lower, ymax = upper),
+    position = position_dodge(width = 0.5),
+    width = 0.2
   ) +
-  theme_minimal()
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  coord_flip() +
+  labs(
+    title = "Effect of Ad Type by Education Stratification Model:Foreign Policy",
+    x = "Education Model",
+    y = "Effect Size (Estimate ± 95% CI)",
+    color = "Variables"
+  ) +
+  theme_minimal(base_size = 13)
+
+
+
+
+
+
+
