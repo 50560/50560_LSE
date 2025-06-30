@@ -1,0 +1,64 @@
+# comparison plotting script for the differences in primary models by 3 models of race across the three primary issues (Figure 2). The same script was also used to produce the comaprison plot of the 3 main conceptualisations of race across the 3 primary issues (Figure 3). 
+library(ggplot2)
+library(dplyr)
+
+### Immigration ###
+model_summary <- summary(meta_fit_race_immigration_interaction)
+plot_data_immigration <- data.frame(
+  Term = rownames(model_summary$beta),
+  Estimate = model_summary$beta[, 1],
+  SE = model_summary$se,
+  CI.lb = model_summary$ci.lb,
+  CI.ub = model_summary$ci.ub,
+  pval = model_summary$pval,
+  Issue = "Immigration",
+  TermType = c("Intercept", "Issue", "Race", "Interaction")
+)
+
+### BLM ###
+model_summary <- summary(meta_fit_race_blm_interaction)
+plot_data_blm <- data.frame(
+  Term = rownames(model_summary$beta),
+  Estimate = model_summary$beta[, 1],
+  SE = model_summary$se,
+  CI.lb = model_summary$ci.lb,
+  CI.ub = model_summary$ci.ub,
+  pval = model_summary$pval,
+  Issue = "BLM",
+  TermType = c("Intercept", "Issue", "Race", "Interaction")
+)
+
+### Foreign_p ###
+model_summary <- summary(meta_fit_race_forignp_interaction)
+plot_data_forgn <- data.frame(
+  Term = rownames(model_summary$beta),
+  Estimate = model_summary$beta[, 1],
+  SE = model_summary$se,
+  CI.lb = model_summary$ci.lb,
+  CI.ub = model_summary$ci.ub,
+  pval = model_summary$pval,
+  Issue = "Foreign Policy",
+  TermType = c("Intercept", "Issue", "Race", "Interaction")
+)
+
+### Combine all ###
+all_plot_data <- bind_rows(plot_data_immigration, plot_data_blm, plot_data_forgn)
+
+# Set order of term types
+all_plot_data$TermType <- factor(all_plot_data$TermType,
+                                 levels = c("Intercept", "Issue", "Race", "Interaction"))
+
+# Plot
+ggplot(all_plot_data, aes(x = TermType, y = Estimate, color = Issue)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  geom_errorbar(aes(ymin = CI.lb, ymax = CI.ub),
+                position = position_dodge(width = 0.5), width = 0.2) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(
+    title = "Meta-Regression Coefficients by Issue for White/NonWhite",
+    x = "Term Type",
+    y = "Effect Size",
+    color = "Issue"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5))
