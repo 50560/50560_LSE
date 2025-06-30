@@ -1,4 +1,4 @@
-# comparison plotting script for the differences in primary models by 3 models of race across the three primary issues (Figure 2). The same script was also used to produce the comaprison plot of the 3 main conceptualisations of race across the 3 primary issues (Figure 3). 
+# comparison plotting script for the differences in primary model of race (Model 1) across the three primary issues (Figure 1). 
 library(ggplot2)
 library(dplyr)
 
@@ -28,7 +28,7 @@ plot_data_blm <- data.frame(
   TermType = c("Intercept", "Issue", "Race", "Interaction")
 )
 
-### Foreign_p ###
+###Foreign policy
 model_summary <- summary(meta_fit_race_forignp_interaction)
 plot_data_forgn <- data.frame(
   Term = rownames(model_summary$beta),
@@ -62,3 +62,122 @@ ggplot(all_plot_data, aes(x = TermType, y = Estimate, color = Issue)) +
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 0, hjust = 0.5))
+
+# the next section was used to produce figures 2 and 3, comaprison plots of the the 3 main models of race (Figure 2) and conceptualisations of eductaion (Figure 3), across the 3 primary features.
+
+
+library(tibble)
+library(dplyr)
+library(ggplot2)
+
+# Immigration data
+immigration_df <- tibble(
+  model = rep(c("Model 1: White/NonWhite", "Model 2: White/Black", "Model 3: White/Hispanic"), each = 2),
+  type = rep(c("Immigration x White", "Immigration x Other Racial group"), times = 3),
+  estimate = c(-0.424, 0.477, 0.179, -0.126, 0.518, -0.401),
+  std.error = c(0.770, 0.517, 0.978, 0.795, 0.848, 0.686),
+  issue = "Immigration"
+)
+
+# BLM data
+blm_df <- tibble(
+  model = rep(c("Model 1: White/NonWhite", "Model 2: White/Black", "Model 3: White/Hispanic"), each = 2),
+  type = rep(c("BLM x White", "BLM x Other Racial group"), times = 3),
+  estimate = c(-0.079, -0.294, -0.861, 0.488, -0.48, -0.373),
+  std.error = c(0.367, 0.240, 0.427, 0.314, 0.560, 0.560),
+  issue = "BLM"
+)
+
+# Foreign Policy data
+foreign_df <- tibble(
+  model = rep(c("Model 1: White/NonWhite", "Model 2: White/Black", "Model 3: White/Hispanic"), each = 2),
+  type = rep(c("Foreign Policy x White", "Foreign Policy x Other Racial group"), times = 3),
+  estimate = c(0.244, -0.128, 0.518, -0.401, 0.117, 0.117),
+  std.error = c(0.728, 0.532, 0.848, 0.687, 1.234, 0.497),
+  issue = "Foreign Policy"
+)
+
+# Combine all
+meta_summary_all <- bind_rows(immigration_df, blm_df, foreign_df) %>%
+  mutate(
+    lower = estimate - 1.96 * std.error,
+    upper = estimate + 1.96 * std.error
+  )
+
+# Plot combined
+ggplot(meta_summary_all, aes(x = model, y = estimate, color = type)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  geom_errorbar(
+    aes(ymin = lower, ymax = upper),
+    position = position_dodge(width = 0.5),
+    width = 0.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  coord_flip() +
+  facet_wrap(~ issue, scales = "free_y") +
+  labs(
+    title = "Effect of Ad Type by Racial Stratification Across Issues",
+    x = "Model",
+    y = "Effect Size (Estimate ± 95% CI)",
+    color = "Variable"
+  ) +
+  theme_minimal(base_size = 13)
+
+
+# and for figure 3:
+# Immigration
+meta_immi <- tibble(
+  model = rep(c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"), each = 2),
+  type = rep(c("Immigration x High Education", "Immigration x Low Education"), times = 3),
+  estimate = c(0.394, -1.448, 0.55, -0.684, 0.009, 0.515),
+  std.error = c(0.371, 0.730, 0.524, 0.896, 0.68, 0.872),
+  issue = "Immigration"
+)
+
+# BLM
+meta_blm <- tibble(
+  model = rep(c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"), each = 2),
+  type = rep(c("BLM x High Education", "BLM x Low Education"), times = 3),
+  estimate = c(-0.238, 0.312, -0.291, 0.246, -0.372, 0.257),
+  std.error = c(0.206, 0.722, 0.246, 0.41, 0.315, 0.404),
+  issue = "BLM"
+)
+
+# Foreign Policy
+meta_fori <- tibble(
+  model = rep(c("Model 1: ≤ School", "Model 2: <High School", "Model 3: <Some College"), each = 2),
+  type = rep(c("Foreign Policy x High Education", "Foreign Policy x Low Education"), times = 3),
+  estimate = c(-0.146, 0.176, -0.499, 2.074, 0.078, 0.084),
+  std.error = c(0.402, 1.233, 0.479, 0.791, 0.608, 0.784),
+  issue = "Foreign Policy"
+)
+
+# Combine all
+meta_all <- bind_rows(meta_immi, meta_blm, meta_fori) %>%
+  mutate(
+    lower = estimate - 1.96 * std.error,
+    upper = estimate + 1.96 * std.error
+  )
+
+# Plot
+ggplot(meta_all, aes(x = model, y = estimate, color = type)) +
+  geom_point(position = position_dodge(width = 0.6), size = 3) +
+  geom_errorbar(
+    aes(ymin = lower, ymax = upper),
+    position = position_dodge(width = 0.6),
+    width = 0.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  coord_flip() +
+  facet_wrap(~ issue, scales = "free_y") +
+  labs(
+    title = "Interaction Effects by Education Level and Issue",
+    x = "Education Model",
+    y = "Effect Size (Estimate ± 95% CI)",
+    color = "Interaction Term"
+  ) +
+  theme_minimal(base_size = 13)
+
+
+
+
