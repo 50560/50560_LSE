@@ -14,7 +14,7 @@ library(Matrix)
 
 
 # Read data in
-setwd("/Users/laurahurn/Desktop/LSE/diss/replication_archive/output/processed_data")
+setwd("/Users/x/Desktop/LSE/diss/replication_archive/output/processed_data")
 df_responses2020 <- readRDS("responses.rds") %>% filter(dataset_year == "2020")
 df_tags2020 <- readRDS("tagging_2020.rds")
 
