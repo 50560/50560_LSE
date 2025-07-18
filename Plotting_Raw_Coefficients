@@ -2,7 +2,7 @@
 library(ggplot2)
 library(dplyr)
 
-### Immigration ###
+# Immigration 
 model_summary <- summary(meta_fit_race_immigration_interaction)
 plot_data_immigration <- data.frame(
   Term = rownames(model_summary$beta),
@@ -15,7 +15,7 @@ plot_data_immigration <- data.frame(
   TermType = c("Intercept", "Issue", "Race", "Interaction")
 )
 
-### BLM ###
+# BLM 
 model_summary <- summary(meta_fit_race_blm_interaction)
 plot_data_blm <- data.frame(
   Term = rownames(model_summary$beta),
@@ -28,7 +28,7 @@ plot_data_blm <- data.frame(
   TermType = c("Intercept", "Issue", "Race", "Interaction")
 )
 
-###Foreign policy
+#Foreign policy
 model_summary <- summary(meta_fit_race_forignp_interaction)
 plot_data_forgn <- data.frame(
   Term = rownames(model_summary$beta),
@@ -41,7 +41,7 @@ plot_data_forgn <- data.frame(
   TermType = c("Intercept", "Issue", "Race", "Interaction")
 )
 
-### Combine all ###
+# Combining all primary 
 all_plot_data <- bind_rows(plot_data_immigration, plot_data_blm, plot_data_forgn)
 
 # Set order of term types
@@ -97,7 +97,7 @@ foreign_df <- tibble(
   issue = "Foreign Policy"
 )
 
-# Combine all
+# Combining all
 meta_summary_all <- bind_rows(immigration_df, blm_df, foreign_df) %>%
   mutate(
     lower = estimate - 1.96 * std.error,
