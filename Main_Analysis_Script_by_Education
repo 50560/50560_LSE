@@ -1,6 +1,5 @@
 #This script was used to conduct analysis on the persuaisve effects of ads by eductaion level, using three binary cut offs for eductaion.
 
-
 #load in packages 
 library(tidyverse)
 library(metafor)
@@ -13,7 +12,7 @@ library(metafor)
 library(Matrix)
 
 
-# visualise levels
+# visualise education levels
 ggplot(df_responses2020, aes(x = education)) +
   geom_bar(fill = "steelblue") +
   labs(
@@ -24,8 +23,8 @@ ggplot(df_responses2020, aes(x = education)) +
   theme_minimal()
 
 
-# Read data in
-setwd("/Users/laurahurn/Desktop/LSE/diss/replication_archive/output/processed_data")
+# Read the data in
+setwd("/Users/x/Desktop/LSE/diss/replication_archive/output/processed_data")
 df_responses2020 <- readRDS("responses.rds") %>% filter(dataset_year == "2020")
 df_tags2020 <- readRDS("tagging_2020.rds")
 
@@ -42,7 +41,7 @@ ggplot(df_responses2020, aes(x = education)) +
   theme_minimal()
 
 
-#eductaion subset 
+# creating a numeric based eductaion subset 
 df_responses2020$education_numeric <- recode(df_responses2020$education,
                                              "school" = 1, 
                                              "highschool" = 2, 
@@ -55,8 +54,8 @@ df_responses2020$education_binary <- ifelse(is.na(df_responses2020$education_num
 
 
 df_filtered <- df_responses2020 %>%
-  filter(!is.na(education_numeric))  # Removes NA values in education
-# model 1: using school as the cut off 
+  filter(!is.na(education_numeric))  
+# model 1: using school completion as the cut off 
 # Create two subsets
 df_low_edu <- df_filtered %>%
   filter(education_numeric < 2)
@@ -64,7 +63,7 @@ df_low_edu <- df_filtered %>%
 df_high_edu <- df_filtered %>%
   filter(education_numeric >= 2)
 
-# step 1 - get in to high edu group
+# step 1 - subset the higher eductaion group
 list_study_ids_high_edu <- df_high_edu$study_id %>% unique
 
 df_sample_high_edu <-
@@ -82,8 +81,6 @@ df_sample_combined_fav_choice_high_edu <- df_sample_high_edu %>%
     )
   )
 
-
-
 out_loop_high_edu <- map(list_study_ids_high_edu, function(.x) {
   df_filtered <- df_sample_combined_fav_choice_high_edu %>% filter(study_id == .x)
   
@@ -94,16 +91,12 @@ out_loop_high_edu <- map(list_study_ids_high_edu, function(.x) {
   
 
   lm_fit <- lm(combined_outcome ~ factor(content_id), data = df_filtered)
-  
-  
   tidied_estimates <- tidy(lm_fit) %>% filter(term != "(Intercept)")
-  
   
   vcov_matrix <- vcov(lm_fit)
   vcov_matrix <- vcov_matrix[rownames(vcov_matrix) != "(Intercept)", colnames(vcov_matrix) != "(Intercept)"]
   list("tidied_estimates" = tidied_estimates, "vcov_matrix" = vcov_matrix)
 })
-
 
 out_loop_high_edu <- compact(out_loop_high_edu)
 
@@ -111,7 +104,7 @@ out_loop_high_edu <- compact(out_loop_high_edu)
 tidied_estimates_high_edu <- map_dfr(out_loop_high_edu, function(x) x$tidied_estimates)
 giant_vcov_matrix_high_edu <- map(out_loop_high_edu, function(.x) .x$vcov_matrix) %>% bdiag()
 
-# Checks
+# Checks for correct binding
 stopifnot(isSymmetric(giant_vcov_matrix_high_edu))
 stopifnot(identical(giant_vcov_matrix_high_edu %>% diag %>% sqrt %>% unname %>% round(10), tidied_estimates_high_edu$std.error %>% round(10)))
 
@@ -121,18 +114,7 @@ out_loop_high_edu[[1]]$vcov_matrix
 
 tidied_estimates_high_edu <- map_dfr(out_loop_high_edu, function(x) x$tidied_estimates)
 
-
-giant_vcov_matrix_high_edu <-
-  map(out_loop_high_edu,
-      function(.x) {
-        .x$vcov_matrix
-      }) %>% 
-  bdiag()
-
-stopifnot(isSymmetric(giant_vcov_matrix_high_edu))
-stopifnot(identical(giant_vcov_matrix_high_edu %>% diag %>% sqrt %>% unname %>% round(10), tidied_estimates_high_edu$std.error %>% round(10)))
-
-#2. for the low edu group
+#2. for the low education group
 list_study_ids_low_edu <- df_low_edu$study_id %>% unique
 
 
@@ -153,7 +135,6 @@ df_sample_combined_fav_choice_low_edu <- df_sample_low_edu %>%
   )
 
 
-
 out_loop_low_edu <- map(list_study_ids_low_edu, function(.x) {
   df_filtered <- df_sample_combined_fav_choice_low_edu %>% filter(study_id == .x)
   
@@ -164,9 +145,7 @@ out_loop_low_edu <- map(list_study_ids_low_edu, function(.x) {
   
  
   lm_fit <- lm(combined_outcome ~ factor(content_id), data = df_filtered)
- 
   tidied_estimates <- tidy(lm_fit) %>% filter(term != "(Intercept)")
-
   vcov_matrix <- vcov(lm_fit)
   vcov_matrix <- vcov_matrix[rownames(vcov_matrix) != "(Intercept)", colnames(vcov_matrix) != "(Intercept)"]
 
@@ -180,7 +159,6 @@ out_loop_low_edu[[1]]$tidied_estimates
 out_loop_low_edu[[1]]$vcov_matrix
 
 tidied_estimates_low_edu <- map_dfr(out_loop_low_edu, function(x) x$tidied_estimates)
-#loop over the covariance matrices and bdiag them all together at the end
 
 giant_vcov_matrix_low_edu <-
   map(out_loop_low_edu,
@@ -188,7 +166,7 @@ giant_vcov_matrix_low_edu <-
         .x$vcov_matrix
       }) %>% 
   bdiag()
-# checks
+# sanity checks
 stopifnot(isSymmetric(giant_vcov_matrix_low_edu))
 stopifnot(identical(giant_vcov_matrix_low_edu %>% diag %>% sqrt %>% unname %>% round(10), tidied_estimates_low_edu$std.error %>% round(10)))
 
@@ -199,13 +177,10 @@ final_giant_vcov_matrix <- bdiag(giant_vcov_matrix_low_edu, giant_vcov_matrix_hi
 stopifnot(isSymmetric(final_giant_vcov_matrix))
 computed_se <- final_giant_vcov_matrix %>% diag() %>% sqrt() %>% unname() %>% round(10)
 expected_se <- c(tidied_estimates_low_edu$std.error, tidied_estimates_high_edu$std.error) %>% round(10)
-# Check if they match
 stopifnot(identical(computed_se, expected_se))
 
 
 #  meta-regressions by education level - model 1
-
-
 tidied_estimates_high_edu <- tidied_estimates_high_edu %>%
   mutate(education_group = "high")
 
@@ -232,7 +207,6 @@ meta_fit_edu_blm_interaction <- rma.mv(
   data = lm_estimates_edu
 )
 summary(meta_fit_edu_blm_interaction)
-
 
 
 meta_fit_edu_forignp_interaction <- rma.mv(
@@ -287,18 +261,10 @@ summary(meta_fit_combined_immigration_foreignp)
 
 
 
-
-
-
-
-
-
-
-
-##model 2: when eductaion is some college level or below 
+#model 2: when eductaion is set at college level or below 
 
 # reset data frame by re-reading data in
-setwd("/Users/laurahurn/Desktop/LSE/diss/replication_archive/output/processed_data")
+setwd("/Users/x/Desktop/LSE/diss/replication_archive/output/processed_data")
 df_responses2020 <- readRDS("responses.rds") %>% filter(dataset_year == "2020")
 df_tags2020 <- readRDS("tagging_2020.rds")
 
@@ -328,7 +294,7 @@ df_low_edu <- df_filtered %>%
 df_high_edu <- df_filtered %>%
   filter(education_numeric >= 3)
 
-# step 1 - get in to high edu group
+# step 1 - subset a higher eductaion group
 list_study_ids_high_edu <- df_high_edu$study_id %>% unique
 
 
@@ -338,7 +304,7 @@ df_sample_high_edu <-
   select(study_id, dataset_year, treat, content_id, favorability, votechoice)
 
 
-#create combined matrix 
+#create a combined matrix 
 df_sample_combined_fav_choice_high_edu <- df_sample_high_edu %>%
   mutate(
     combined_outcome = case_when(
@@ -553,7 +519,7 @@ summary(meta_fit_combined_immigration_foreignp)
 
 
 # re-read data in to over-write previous specification
-setwd("/Users/laurahurn/Desktop/LSE/diss/replication_archive/output/processed_data")
+setwd("/Users/x/Desktop/LSE/diss/replication_archive/output/processed_data")
 df_responses2020 <- readRDS("responses.rds") %>% filter(dataset_year == "2020")
 df_tags2020 <- readRDS("tagging_2020.rds")
 
