@@ -1,4 +1,4 @@
-# This script was used as the basic model and starting point for the other meta-regressions with moderators. it works out a regression by study Id based on treatment and control conditions (content id), merges this with tagged features, and then runs a meta-regression by primary and secondry features of interest. some basic visualisation code that is and is not included in the thesis is featured.
+# This script was used as the basic model (H1) and starting point for the other meta-regressions with moderators. it runs a regression by study Id based on treatment and control conditions (content id), merges this with tagged features, and then runs a meta-regression by primary and secondry features of interest. 
 
 #load in packages 
 library(tidyverse)
@@ -38,10 +38,10 @@ df_sample <-
 df_sample_combined_fav_choice <- df_sample %>%
   mutate(
     combined_outcome = case_when(
-      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  # Average if both exist
+      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  
       !is.na(favorability) ~ favorability,  
       !is.na(votechoice) ~ votechoice,  
-      TRUE ~ NA_real_  # Set NA if both are missing
+      TRUE ~ NA_real_  
     )
   )
 #visualisation of the combined measure 
@@ -66,11 +66,11 @@ out_loop <-
         
         vcov_matrix <- vcov(lm_fit)  
         
-        # Remove the intercept term from vcov_matrix  
+        # Remove the intercept   
         vcov_matrix <- vcov_matrix[rownames(vcov_matrix) != "(Intercept)",  
                                    colnames(vcov_matrix) != "(Intercept)"]  
         
-        # Return the objects in a list  
+         
         list("tidied_estimates" = tidied_estimates,  
              "vcov_matrix" = vcov_matrix)  
       })  
@@ -99,45 +99,45 @@ stopifnot(identical(giant_vcov_matrix %>% diag %>% sqrt %>% unname %>% round(10)
 lm_estimates <- map_dfr(out_loop, function(x) {
   x$tidied_estimates  # Extract estimates
 }) %>%
-  mutate(content_id = gsub("factor\\(content_id\\)", "", term)) %>%  # Clean term names
-  left_join(df_tags2020, by = "content_id")  # Merge with tags dataset
+  mutate(content_id = gsub("factor\\(content_id\\)", "", term)) %>%  
+  left_join(df_tags2020, by = "content_id")  
 
-meta_fit_all <- rma.mv(yi = estimate,   # Effect size (from lm_estimates)
+meta_fit_all <- rma.mv(yi = estimate,   
                                           V = giant_vcov_matrix,      
-                                          mods = ~ issue_immigrant + issue_foreign_p + issue_blm_race + issue_decency + emotion_fear + persuaded_libs + persuaded_black + persuaded_latinx,  # Moderator variable
+                                          mods = ~ issue_immigrant + issue_foreign_p + issue_blm_race + issue_decency + emotion_fear + persuaded_libs + persuaded_black + persuaded_latinx,  
                                           data = lm_estimates)
 summary(meta_fit_all)
 #primary issues
-meta_fit_immigrant <- rma.mv(yi = estimate,   # Effect size (from lm_estimates)
-                   V = giant_vcov_matrix,      # Variance-covariance matrix
-                   mods = ~ issue_immigrant,  # Moderator variable
+meta_fit_immigrant <- rma.mv(yi = estimate,   
+                   V = giant_vcov_matrix,      
+                   mods = ~ issue_immigrant,  
                    data = lm_estimates)
 summary(meta_fit_immigrant)
 
 
-meta_fit_blm <- rma.mv(yi = estimate,   # Effect size (from lm_estimates)
-                             V = giant_vcov_matrix,      # Variance-covariance matrix
-                             mods = ~ issue_blm_race,  # Moderator variable
+meta_fit_blm <- rma.mv(yi = estimate,   
+                             V = giant_vcov_matrix,      
+                             mods = ~ issue_blm_race,  
                              data = lm_estimates)
 summary(meta_fit_blm)
 
-meta_fit_forpoli <- rma.mv(yi = estimate,   # Effect size (from lm_estimates)
-                       V = giant_vcov_matrix,      # Variance-covariance matrix
-                       mods = ~ issue_foreign_p,  # Moderator variable
+meta_fit_forpoli <- rma.mv(yi = estimate,   
+                       V = giant_vcov_matrix,      
+                       mods = ~ issue_foreign_p,  
                        data = lm_estimates)
 summary(meta_fit_forpoli)
 
 #secondary issues
-meta_fit_decency <- rma.mv(yi = estimate,   # Effect size (from lm_estimates)
-                           V = giant_vcov_matrix,      # Variance-covariance matrix
-                           mods = ~ issue_decency,  # Moderator variable
+meta_fit_decency <- rma.mv(yi = estimate,   
+                           V = giant_vcov_matrix,      
+                           mods = ~ issue_decency,  
                            data = lm_estimates)
 summary(meta_fit_decency)
 
 
-meta_fit_fear <- rma.mv(yi = estimate,   # Effect size (from lm_estimates)
-                           V = giant_vcov_matrix,      # Variance-covariance matrix
-                           mods = ~ emotion_fear,  # Moderator variable
+meta_fit_fear <- rma.mv(yi = estimate,   
+                           V = giant_vcov_matrix,      
+                           mods = ~ emotion_fear,  
                            data = lm_estimates)
 summary(meta_fit_fear)
 
