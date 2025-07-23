@@ -1,4 +1,4 @@
-# comparison plotting script for the differences in primary model of race (Model 1) across the three primary issues (Figure 1). 
+# comparison plotting script for the differences in primary model of race (H2,Model 1) across the three primary issues (Figure 1). 
 library(ggplot2)
 library(dplyr)
 
