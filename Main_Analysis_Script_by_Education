@@ -1,4 +1,4 @@
-#This script was used to conduct analysis on the persuaisve effects of ads by eductaion level, using three binary cut offs for eductaion.
+#This script was used to conduct analysis on the persuaisve effects of ads by eductaion level, using three binary cut offs for eductaion (H3).
 
 #load in packages 
 library(tidyverse)
@@ -53,7 +53,7 @@ df_low_edu <- df_filtered %>%
 df_high_edu <- df_filtered %>%
   filter(education_numeric >= 2)
 
-# step 1 - subset the higher eductaion group
+# step 1 - run analysis for the higher eductaion group
 list_study_ids_high_edu <- df_high_edu$study_id %>% unique
 
 df_sample_high_edu <-
@@ -67,7 +67,7 @@ df_sample_combined_fav_choice_high_edu <- df_sample_high_edu %>%
       !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  # Average if both exist
       !is.na(favorability) ~ favorability,  
       !is.na(votechoice) ~ votechoice,  
-      TRUE ~ NA_real_  # Set NA if both are missing
+      TRUE ~ NA_real_  
     )
   )
 
@@ -102,7 +102,7 @@ out_loop_high_edu[[1]]$vcov_matrix
 
 tidied_estimates_high_edu <- map_dfr(out_loop_high_edu, function(x) x$tidied_estimates)
 
-#2. for the low education group
+#2. repeat for the lower education group
 list_study_ids_low_edu <- df_low_edu$study_id %>% unique
 
 
@@ -115,10 +115,10 @@ df_sample_low_edu <-
 df_sample_combined_fav_choice_low_edu <- df_sample_low_edu %>%
   mutate(
     combined_outcome = case_when(
-      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  # Average if both exist
+      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  
       !is.na(favorability) ~ favorability,  
       !is.na(votechoice) ~ votechoice,  
-      TRUE ~ NA_real_  # Set NA if both are missing
+      TRUE ~ NA_real_  
     )
   )
 
@@ -257,7 +257,7 @@ df_tags2020 <- readRDS("tagging_2020.rds")
 list_study_ids <- df_responses2020$study_id %>% unique
 
 
-#1. eductaion subset 
+#1. create the eductaion subset 
 df_responses2020$education_numeric <- recode(df_responses2020$education,
                                              "school" = 1, 
                                              "highschool" = 2, 
@@ -272,14 +272,14 @@ df_responses2020$education_binary <- ifelse(is.na(df_responses2020$education_num
 df_filtered <- df_responses2020 %>%
   filter(!is.na(education_numeric))  # checks and removes NA values 
 
-# Creating two subsets: at colleg level
+# Creating two subsets: at college level
 df_low_edu <- df_filtered %>%
   filter(education_numeric < 3)
 
 df_high_edu <- df_filtered %>%
   filter(education_numeric >= 3)
 
-# step 1 - subset a higher eductaion group
+# step 1 - run analysis on the higher eductaion group
 list_study_ids_high_edu <- df_high_edu$study_id %>% unique
 
 
@@ -289,14 +289,14 @@ df_sample_high_edu <-
   select(study_id, dataset_year, treat, content_id, favorability, votechoice)
 
 
-#create a combined matrix 
+
 df_sample_combined_fav_choice_high_edu <- df_sample_high_edu %>%
   mutate(
     combined_outcome = case_when(
-      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  # Average if both exist
+      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  
       !is.na(favorability) ~ favorability,  
       !is.na(votechoice) ~ votechoice,  
-      TRUE ~ NA_real_  # Set NA if both are missing
+      TRUE ~ NA_real_  
     )
   )
 
@@ -304,7 +304,6 @@ df_sample_combined_fav_choice_high_edu <- df_sample_high_edu %>%
 out_loop_high_edu <- map(list_study_ids_high_edu, function(.x) {
   df_filtered <- df_sample_combined_fav_choice_high_edu %>% filter(study_id == .x)
   
-  # Skip if no data exists for this study_id
   if (nrow(df_filtered) == 0) {
     return(NULL)
   }
@@ -327,7 +326,7 @@ tidied_estimates_high_edu <- map_dfr(out_loop_high_edu, function(x) x$tidied_est
 # Combine the variance-covariance matrices
 giant_vcov_matrix_high_edu <- map(out_loop_high_edu, function(.x) .x$vcov_matrix) %>% bdiag()
 
-# CSanity checks
+# Sanity checks
 stopifnot(isSymmetric(giant_vcov_matrix_high_edu))
 stopifnot(identical(giant_vcov_matrix_high_edu %>% diag %>% sqrt %>% unname %>% round(10), tidied_estimates_high_edu$std.error %>% round(10)))
 
@@ -350,10 +349,10 @@ df_sample_low_edu <-
 df_sample_combined_fav_choice_low_edu <- df_sample_low_edu %>%
   mutate(
     combined_outcome = case_when(
-      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  # Average if both exist
+      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  
       !is.na(favorability) ~ favorability,  
       !is.na(votechoice) ~ votechoice,  
-      TRUE ~ NA_real_  # Set NA if both are missing
+      TRUE ~ NA_real_  
     )
   )
 
@@ -507,7 +506,7 @@ df_responses2020$education_binary <- ifelse(is.na(df_responses2020$education_num
 df_filtered <- df_responses2020 %>%
   filter(!is.na(education_numeric))  # Removes NA values in education
 
-# Create two subsets: below 4 and at least 4, finnished college or not or not
+# Create two subsets: for finnished college or not 
 df_low_edu <- df_filtered %>%
   filter(education_numeric < 4)
 # starting with the high eductaion group
@@ -525,10 +524,10 @@ df_sample_high_edu <-
 df_sample_combined_fav_choice_high_edu <- df_sample_high_edu %>%
   mutate(
     combined_outcome = case_when(
-      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  # Average if both exist
+      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  
       !is.na(favorability) ~ favorability,  
       !is.na(votechoice) ~ votechoice,  
-      TRUE ~ NA_real_  # Set NA if both are missing
+      TRUE ~ NA_real_  
     )
   )
 
@@ -562,7 +561,7 @@ out_loop_high_edu[[1]]$tidied_estimates
 out_loop_high_edu[[1]]$vcov_matrix
 
 
-#2. repeat for the low edu group
+#2. repeat for the lower education group
 list_study_ids_low_edu <- df_low_edu$study_id %>% unique
 
 
@@ -574,10 +573,10 @@ df_sample_low_edu <-
 df_sample_combined_fav_choice_low_edu <- df_sample_low_edu %>%
   mutate(
     combined_outcome = case_when(
-      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  # Average if both exist
+      !is.na(favorability) & !is.na(votechoice) ~ (favorability + votechoice) / 2,  
       !is.na(favorability) ~ favorability,  
       !is.na(votechoice) ~ votechoice,  
-      TRUE ~ NA_real_  # Set NA if both are missing
+      TRUE ~ NA_real_  
     )
   )
 
@@ -599,7 +598,7 @@ out_loop_low_edu <- map(list_study_ids_low_edu, function(.x) {
 
 out_loop_low_edu <- compact(out_loop_low_edu)
 
-# check one study
+# check
 out_loop_low_edu[[1]]$tidied_estimates
 out_loop_low_edu[[1]]$vcov_matrix
 
