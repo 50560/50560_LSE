@@ -1,4 +1,4 @@
-#This script was used to produce forrest plots of the average ad effects overall and by ad feature.
+#This script was used to produce forrest plots of the average ad effects overall and by ad feature (Appendix B.1-4).
 
 #load in packages
 library(metafor)
