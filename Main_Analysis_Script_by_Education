@@ -53,7 +53,7 @@ df_low_edu <- df_filtered %>%
 df_high_edu <- df_filtered %>%
   filter(education_numeric >= 2)
 
-# step 1 - run analysis for the higher eductaion group
+# 1- run analysis for the higher eductaion group
 list_study_ids_high_edu <- df_high_edu$study_id %>% unique
 
 df_sample_high_edu <-
