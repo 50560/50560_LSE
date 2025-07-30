@@ -1,4 +1,4 @@
-# This script was used as the basic model (H1) and starting point for the other meta-regressions with moderators. it runs a regression by study Id based on treatment and control conditions (content id), merges this with tagged features, and then runs a meta-regression by primary and secondry features of interest. 
+# This script was used as the basic model (H1) and starting point for the other meta-regressions with moderators. it runs a regression by study Id based on treatment and control conditions (content id), merges this with tagged features, and then runs a meta-regression by primary and secondary features of interest. 
 
 #load in packages 
 library(tidyverse)
