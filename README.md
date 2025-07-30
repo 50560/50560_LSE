@@ -1,4 +1,4 @@
-Attatched on this repository is all scripts that were used in the final output of this dissertation. This includes all analysis and plotting scripts for all models, moderatures and features.
+Attatched on this repository is the key scripts that were used in the final output of this dissertation. This includes all analysis and plotting scripts for all models, moderatures and features.
 A brief overview of the function of each script is as follows:
 Forrest Plotting Script: produced  appendix figures from B.1-B.4.
 Main Analysis Scipt: used for hypothesis 1, running an OLS for all content IDs by treatment and control specification, merging these in a block diagnonal matrix and then estimating coefficients by ad content type.
