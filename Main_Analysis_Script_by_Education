@@ -39,7 +39,7 @@ df_responses2020$education_numeric <- recode(df_responses2020$education,
                                              "college" = 4, 
                                              "postgrad" = 5, 
                                              .default = NA_real_)
-
+# model 1: school cut off
 df_responses2020$education_binary <- ifelse(is.na(df_responses2020$education_numeric), NA, df_responses2020$education_numeric >= 2)
 
 
